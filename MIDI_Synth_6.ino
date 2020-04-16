@@ -60,17 +60,16 @@ void noteOn(byte ch, byte n, byte v)
     noteOff(ch, n, 0);
     return;
   }
+  if(noteMap[ch][n] >= 0)
+    notes[noteMap[ch][n]].on(n, v);
   else
-    if(noteMap[ch][n] >= 0)
-      notes[noteMap[ch][n]].on(n, v);
-    else
-      for(char i = 0; i < MAX_NOTES; i++)
-        if(notes[i].state == -1)
-        {
-          noteMap[ch][n] = i;
-          notes[i].on(n, v);
-          break;
-        }
+    for(char i = 0; i < MAX_NOTES; i++)
+      if(notes[i].state == -1)
+      {
+        noteMap[ch][n] = i;
+        notes[i].on(n, v);
+        break;
+      }
 }
 
 void setup()
@@ -117,7 +116,7 @@ void loop()
           noteOn(command[0] & 0xf, command[1], a);
         if((command[0] & 0xf0) == 0x80)
           noteOff(command[0] & 0xf, command[1], a);
-        }
+      }
     }
     if(count < 2)
       command[count] = a;
